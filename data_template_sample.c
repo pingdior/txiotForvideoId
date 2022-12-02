@@ -22,6 +22,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #ifdef AUTH_MODE_CERT
 static char sg_cert_file[PATH_MAX + 1];  // full path of device cert file
@@ -37,8 +38,9 @@ static size_t        sg_data_report_buffersize = sizeof(sg_data_report_buffer) /
 #ifdef EVENT_POST_ENABLED
 
 #include "events_config.c"
-static char* URLFILEPATH="/home/pi/softwar/txiot/medioFile/";
-static char* STRERROR="error";
+static char URLFILEPATH[1024]="/home/pi/software/txiot/medioFile/";
+static char STRERROR[6]="error";
+static int LINESIZE=1024;
 
 static void update_events_timestamp(sEvent *pEvents, int count)
 {
@@ -177,17 +179,30 @@ static int  getFileNames(char* pPathName,char* arrFileName[])
 		perror("Open dir error...");
 		return 0;
 	}
-	while((ptr=readdir(dir)!=NULL))
+	while((ptr=readdir(dir))!=NULL)
 	{
 		if(ptr->d_type==8) // file
 		{
-			memset(arrFileName[len],0,ptr->d_namlen+1);
+			arrFileName[len]=calloc(sizeof(ptr->d_name),sizeof(char));
 			strcpy(arrFileName[len],ptr->d_name);
 			len++;
+			if(len==LINESIZE)
+			{
+				arrFileName=(char**)realloc(arrFileName,LINESIZE*sizeof(char*));
+			}
 		}
 	}
 	closedir(dir);
 	return len;
+}
+
+static void freePArray(char** pArr)
+{
+	int len=sizeof(pArr);
+	for(int i=0;i<len;i++)
+	{
+		free(pArr[i]);
+	}
 }
 
 static void event_handler(void *pclient, void *handle_context, MQTTEventMsg *msg)
@@ -415,19 +430,21 @@ static int parse_arguments(int argc, char **argv)
 	return 0;
 }
 
+// not free calloc
 char* readFirstLine(char* urlFileName)
 {
-	if((fp=fopen(fileName,"r"))==NULL)
+	FILE* fp=NULL;
+	if((fp=fopen(urlFileName,"r"))==NULL)
 	{
 		perror("open this url failed!");
 		return NULL;
 	}
 	char* urlContext;
-	memset(urlContext,0,1024);
-	fgets(urlContext,1024,fp);
+	urlContext=calloc(LINESIZE,sizeof(char) );
+	fgets(urlContext,LINESIZE,fp);
 	return urlContext;
 }
-
+// not free calloc
 char* getTimeStamp(char* urlFileName)
 {
 	int len=strlen(urlFileName);
@@ -435,7 +452,7 @@ char* getTimeStamp(char* urlFileName)
 	if(len>4)
 	{
 		char* strTimeStamp;
-		memset(strTimeStamp,0,len+1);
+		strTimeStamp=calloc(len+1-4,sizeof(char));
 		strncpy(strTimeStamp,urlFileName,len-4);
 		return strTimeStamp;
 	}
@@ -586,7 +603,7 @@ int main(int argc, char **argv)
 			// Log_d("no data need to be reported or someting goes wrong");
 		}
 #ifdef EVENT_POST_ENABLED
-		char* arrFileName[];
+		char* arrFileName[LINESIZE];
 		int len=getFileNames(URLFILEPATH,arrFileName);
 		if( len>0)
 		{
@@ -602,13 +619,13 @@ int main(int argc, char **argv)
 						// read file context
 						if(urlStr!=NULL)
 						{
-							g_events[1].pEventData[0]->data=urlStr;
+							strcpy(g_events[1].pEventData[0].data,urlStr);
 
 
-							char strTimeString = getTimeStamp(arrFileName[i]);
+							char* strTimeString = getTimeStamp(arrFileName[i]);
 							if(strTimeString!=NULL)
 							{	
-								g_events[1].pEventData[1]->data=strTimeString;
+								strcpy(g_events[1].pEventData[1].data,strTimeString);
 							}
 							eventPostCheck(client);
 							printf("event_post staring-----------------------------------------------------------------------------------------\n");
@@ -619,8 +636,11 @@ int main(int argc, char **argv)
 				}
 				remove(arrFileName[i]);
 			}
+			//free memery
+			freePArray(arrFileName);
 
 		}
+		
 
 #endif
 		HAL_SleepMs(3000);
