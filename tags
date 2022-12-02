@@ -1,0 +1,58 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+EVENT_COUNTS	events_config.c	3;"	d	file:
+MAX_ARRAY_JSON_STR_LEN	data_config.c	3;"	d	file:
+MAX_SAMPLE_ARRAY_SIZE	data_config.c	4;"	d	file:
+OnActionCallback	data_template_sample.c	/^static void OnActionCallback(void *pClient, const char *pClientToken, DeviceAction *pAction)$/;"	f	file:
+OnControlMsgCallback	data_template_sample.c	/^static void OnControlMsgCallback(void *pClient, const char *pJsonValueBuffer, uint32_t valueLength,$/;"	f	file:
+OnReportReplyCallback	data_template_sample.c	/^static void OnReportReplyCallback(void *pClient, Method method, ReplyAck replyAck, const char *pJsonDocument,$/;"	f	file:
+ProductDataDefine	data_config.c	/^} ProductDataDefine;$/;"	t	typeref:struct:_ProductDataDefine	file:
+STRERROR	data_template_sample.c	/^static char* STRERROR="error";$/;"	v	file:
+TOTAL_ACTION_COUNTS	action_config.c	3;"	d	file:
+TOTAL_PROPERTY_COUNT	data_config.c	6;"	d	file:
+URLFILEPATH	data_template_sample.c	/^static char* URLFILEPATH="\/home\/pi\/softwar\/txiot\/medioFile\/";$/;"	v	file:
+_ProductDataDefine	data_config.c	/^typedef struct _ProductDataDefine {$/;"	s	file:
+_get_sys_info	data_template_sample.c	/^static int _get_sys_info(void *handle, char *pJsonDoc, size_t sizeOfBuffer)$/;"	f	file:
+_init_data_template	data_config.c	/^static void _init_data_template(void)$/;"	f	file:
+_refresh_local_property	data_template_sample.c	/^static void _refresh_local_property(void)$/;"	f	file:
+_register_data_template_action	data_template_sample.c	/^static int _register_data_template_action(void *pTemplate_client)$/;"	f	file:
+_register_data_template_property	data_template_sample.c	/^static int _register_data_template_property(void *pTemplate_client)$/;"	f	file:
+_setup_connect_init_params	data_template_sample.c	/^static int _setup_connect_init_params(TemplateInitParams *initParams)$/;"	f	file:
+_usr_init	data_template_sample.c	/^static void _usr_init(void)$/;"	f	file:
+deal_down_stream_user_logic	data_template_sample.c	/^void deal_down_stream_user_logic(void *client, ProductDataDefine *pData)$/;"	f
+deal_up_stream_user_logic	data_template_sample.c	/^int deal_up_stream_user_logic(DeviceProperty *pReportDataList[], int *pCount)$/;"	f
+eventPostCheck	data_template_sample.c	/^static void eventPostCheck(void *client)$/;"	f	file:
+event_handler	data_template_sample.c	/^static void event_handler(void *pclient, void *handle_context, MQTTEventMsg *msg)$/;"	f	file:
+event_post_cb	data_template_sample.c	/^static void event_post_cb(void *pClient, MQTTMessage *msg)$/;"	f	file:
+find_wait_report_property	data_template_sample.c	/^static int find_wait_report_property(DeviceProperty *pReportDataList[])$/;"	f	file:
+g_actionInput_light_blink	action_config.c	/^static DeviceProperty         g_actionInput_light_blink[]  = {$/;"	v	file:
+g_actionOutput_light_blink	action_config.c	/^static DeviceProperty         g_actionOutput_light_blink[] = {$/;"	v	file:
+g_actions	action_config.c	/^static DeviceAction g_actions[] = {$/;"	v	file:
+g_events	events_config.c	/^static sEvent g_events[]={$/;"	v	file:
+g_propertyEvent_LoadVidioEmpty	events_config.c	/^static DeviceProperty g_propertyEvent_LoadVidioEmpty[] = {$/;"	v	file:
+g_propertyEvent_UpLoadMediaUrl	events_config.c	/^static DeviceProperty g_propertyEvent_UpLoadMediaUrl[] = {$/;"	v	file:
+getFileNames	data_template_sample.c	/^static int  getFileNames(char* pPathName,char* arrFileName[])$/;"	f	file:
+m_power_switch	data_config.c	/^    TYPE_DEF_TEMPLATE_BOOL m_power_switch;$/;"	m	struct:_ProductDataDefine	file:
+main	data_template_sample.c	/^int main(int argc, char **argv)$/;"	f
+parse_arguments	data_template_sample.c	/^static int parse_arguments(int argc, char **argv)$/;"	f	file:
+sg_DataTemplate	data_config.c	/^static sDataPoint    sg_DataTemplate[TOTAL_PROPERTY_COUNT];$/;"	v	file:
+sg_LoadVidioEmpty_DeviceID	events_config.c	/^static TYPE_DEF_TEMPLATE_STRING sg_LoadVidioEmpty_DeviceID[32+1]={0};$/;"	v	file:
+sg_ProductData	data_config.c	/^static   ProductDataDefine     sg_ProductData;$/;"	v	file:
+sg_UpLoadMediaUrl_MediaUrl	events_config.c	/^static TYPE_DEF_TEMPLATE_STRING sg_UpLoadMediaUrl_MediaUrl[128+1]={0};$/;"	v	file:
+sg_UpLoadMediaUrl_SaveTime	events_config.c	/^static TYPE_DEF_TEMPLATE_TIME sg_UpLoadMediaUrl_SaveTime = 0;$/;"	v	file:
+sg_cert_file	data_template_sample.c	/^static char sg_cert_file[PATH_MAX + 1];  \/\/ full path of device cert file$/;"	v	file:
+sg_control_msg_arrived	data_template_sample.c	/^static bool          sg_control_msg_arrived    = false;$/;"	v	file:
+sg_data_report_buffer	data_template_sample.c	/^static char          sg_data_report_buffer[2048];$/;"	v	file:
+sg_data_report_buffersize	data_template_sample.c	/^static size_t        sg_data_report_buffersize = sizeof(sg_data_report_buffer) \/ sizeof(sg_data_report_buffer[0]);$/;"	v	file:
+sg_devInfo	data_template_sample.c	/^static DeviceInfo    sg_devInfo;$/;"	v	file:
+sg_key_file	data_template_sample.c	/^static char sg_key_file[PATH_MAX + 1];   \/\/ full path of device key file$/;"	v	file:
+sg_light_blink_in_color	action_config.c	/^static TYPE_DEF_TEMPLATE_BOOL sg_light_blink_in_color      = 0;$/;"	v	file:
+sg_light_blink_in_time	action_config.c	/^static TYPE_DEF_TEMPLATE_INT  sg_light_blink_in_time       = 0;$/;"	v	file:
+sg_light_blink_in_total_time	action_config.c	/^static TYPE_DEF_TEMPLATE_INT  sg_light_blink_in_total_time = 0;$/;"	v	file:
+sg_light_blink_out_err_code	action_config.c	/^static TYPE_DEF_TEMPLATE_ENUM sg_light_blink_out_err_code  = 1;$/;"	v	file:
+sg_subscribe_event_result	data_template_sample.c	/^static MQTTEventType sg_subscribe_event_result = MQTT_EVENT_UNDEF;$/;"	v	file:
+update_events_timestamp	data_template_sample.c	/^static void update_events_timestamp(sEvent *pEvents, int count)$/;"	f	file:
