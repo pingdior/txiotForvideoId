@@ -23,6 +23,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #ifdef AUTH_MODE_CERT
 static char sg_cert_file[PATH_MAX + 1];  // full path of device cert file
@@ -41,6 +42,25 @@ static size_t        sg_data_report_buffersize = sizeof(sg_data_report_buffer) /
 static char URLFILEPATH[1024]="/home/pi/software/txiot/medioFile/";
 static char STRERROR[6]="error";
 static int LINESIZE=1024;
+
+static TYPE_DEF_TEMPLATE_TIME strChangeStampTime(const char* strTime)
+{
+   struct tm tm_time;
+   TYPE_DEF_TEMPLATE_TIME unixtime;
+   int year,month,day,hour,minute,second;
+
+   sscanf(strTime,"%d-%d-%d-%d-%d-%d",&year,&month,&day,&hour,&minute,&second);
+   tm_time.tm_year=year-1900;
+   tm_time.tm_mon=month-1;
+   tm_time.tm_mday=day;
+   tm_time.tm_hour=hour;
+   tm_time.tm_min=minute;
+   tm_time.tm_sec=second;
+   tm_time.tm_isdst=0;
+   //strptime(strTime,"%d-%d-%d-%d-%d-%d",&tm_time);
+   unixtime = mktime(&tm_time);
+   return unixtime;
+}
 
 static void update_events_timestamp(sEvent *pEvents, int count)
 {
@@ -75,7 +95,7 @@ static void eventPostCheck(void *client)
 	sEvent * pEventList[EVENT_COUNTS];
 
 #ifdef EVENT_POST_ENABLED
-//	IOT_Event_setFlag(client, FLAG_EVENT0);  //set the events flag when the evnts your defined occured, see
+	IOT_Event_setFlag(client, FLAG_EVENT0);  //set the events flag when the evnts your defined occured, see
 #endif
 	eflag = IOT_Event_getFlag(client);
 	printf("print eflag---------------------------------:%d\n",eflag);
@@ -94,8 +114,15 @@ static void eventPostCheck(void *client)
 					IOT_Event_setFlag(client, FLAG_EVENT1);  //set the events flag when the evnts your defined occured, see
 #endif
 					eflag = IOT_Event_getFlag(client);
-					// printf("print event_count==1 eflag---------------------------------:%d\n",eflag);
+					printf("print event_count==1 eflag---------------------------------:%d\n",eflag);
 					IOT_Event_clearFlag(client, (1 << i) & ALL_EVENTS_MASK);
+				}
+				else if(event_count==0)
+				{
+#ifdef EVENT_POST_ENABLED
+					IOT_Event_clearFlag(client, (1 << i) & ALL_EVENTS_MASK);
+#endif
+					
 				}
 			}
 		}
@@ -177,14 +204,20 @@ static int  getFileNames(char* pPathName,char* arrFileName[])
 	if((dir=opendir(pPathName))==NULL)
 	{
 		perror("Open dir error...");
-		return 0;
+		return -1;
 	}
 	while((ptr=readdir(dir))!=NULL)
 	{
 		if(ptr->d_type==8) // file
 		{
-			arrFileName[len]=calloc(sizeof(ptr->d_name),sizeof(char));
-			strcpy(arrFileName[len],ptr->d_name);
+			printf("current filename:%s\n",ptr->d_name);
+			int nCount1 = strlen(pPathName);
+			int nCount2 = sizeof(ptr->d_name);
+			int nFilePath =nCount1+nCount2 ;
+			arrFileName[len]=calloc(nFilePath,sizeof(char));
+			strncpy(arrFileName[len],pPathName,nCount1);
+			strncpy(arrFileName[len]+nCount1,ptr->d_name,nCount2);
+             		printf("arrFileName[len]-------------:%s\n",arrFileName[len]);
 			len++;
 			if(len==LINESIZE)
 			{
@@ -196,10 +229,14 @@ static int  getFileNames(char* pPathName,char* arrFileName[])
 	return len;
 }
 
-static void freePArray(char** pArr)
+static void freePArray(char** pArr,int nLen)
 {
-	int len=sizeof(pArr);
-	for(int i=0;i<len;i++)
+	printf("current file arr len----------------------------:%d\n",nLen);
+	if(nLen<1)
+	{
+		perror("arrSize is <1---------------------------");
+	}
+	for(int i=0;i<nLen;i++)
 	{
 		free(pArr[i]);
 	}
@@ -442,18 +479,21 @@ char* readFirstLine(char* urlFileName)
 	char* urlContext;
 	urlContext=calloc(LINESIZE,sizeof(char) );
 	fgets(urlContext,LINESIZE,fp);
+	printf("urlContext---------------------:%s\n",urlContext);
 	return urlContext;
 }
 // not free calloc
 char* getTimeStamp(char* urlFileName)
 {
 	int len=strlen(urlFileName);
+	int nPathCount = strlen(URLFILEPATH);
 	// fileName last 4 word is .txt
-	if(len>4)
+	if(len>(4+nPathCount) )
 	{
 		char* strTimeStamp;
-		strTimeStamp=calloc(len+1-4,sizeof(char));
-		strncpy(strTimeStamp,urlFileName,len-4);
+		strTimeStamp=calloc(len+1-4-nPathCount,sizeof(char));
+		strncpy(strTimeStamp,urlFileName+nPathCount,len-4-nPathCount);
+		printf("strTimeStamp-----------------:%s\n",strTimeStamp);
 		return strTimeStamp;
 	}
 	else
@@ -610,7 +650,8 @@ int main(int argc, char **argv)
 			int i=0;
 			for(i=0;i<len;i++)
 			{
-				if(strstr(arrFileName[i],STRERROR)!=NULL)
+				int nCmp = strncmp(arrFileName[i],STRERROR,strlen(STRERROR));
+				if(nCmp!=0)
 				{
 					if(EVENT_COUNTS>1)
 					{
@@ -622,10 +663,13 @@ int main(int argc, char **argv)
 							strcpy(g_events[1].pEventData[0].data,urlStr);
 
 
+							TYPE_DEF_TEMPLATE_TIME time_tm;
 							char* strTimeString = getTimeStamp(arrFileName[i]);
 							if(strTimeString!=NULL)
 							{	
-								strcpy(g_events[1].pEventData[1].data,strTimeString);
+                                                                time_tm =  strChangeStampTime(strTimeString);
+								g_events[1].pEventData[1].data = &time_tm; 
+								free(strTimeString);
 							}
 							eventPostCheck(client);
 							printf("event_post staring-----------------------------------------------------------------------------------------\n");
@@ -637,8 +681,12 @@ int main(int argc, char **argv)
 				remove(arrFileName[i]);
 			}
 			//free memery
-			freePArray(arrFileName);
+			freePArray(arrFileName,len);
 
+		}
+		else
+		{
+			printf("not any file-------------------------------------\n");
 		}
 		
 
