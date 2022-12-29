@@ -11,6 +11,8 @@
 - 设备名称： 将控制台的设备名称，复制到上图 deviceName。
 - 设备密钥：将控制台的设备密钥，复制到上图 deviceSecret。
 ### 下载以上数据模型到data_template_sample.c所在文件夹
+### 确定“/medioFile/”当前路径所在位置是否合理，视频上传到VOD后生成同VODID的文件
+
 ## 编译
 ### 上述配置信息修改完成后，即可编译。
 ### 在 qcloud-iot-sdk-embedded-c 目录下执行以下命令进行编译。
