@@ -11,7 +11,7 @@
 - 设备名称： 将控制台的设备名称，复制到上图 deviceName。
 - 设备密钥：将控制台的设备密钥，复制到上图 deviceSecret。
 ### 2.4 下载以上数据模型到data_template_sample.c所在文件夹:samples/data_template/
-### 2.5 确定“/medioFile/”当前路径所在位置是否合理，视频上传到VOD后生成同VODID的文件
+### 2.5 确定data_template_sample.c “/medioFile/”当前路径所在位置是否合理，视频上传到VOD后生成同VODID的文件
 ### 2.6 CMakeLists.txt set(FEATURE_EVENT_POST_ENABLED ON)
 ## 3.编译
 ### 3.1 上述配置信息修改完成后，即可编译。
