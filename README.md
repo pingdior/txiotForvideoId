@@ -20,8 +20,8 @@
 ### 3.4 编译成功后，会在 output/release/bin 目录下生成 data_template_sample 执行文件。
 ## 4. 运行 Demo 程序
 ### 4.1 进入 output/release/bin 目录。
-### 4.2 看到可执行文件 ./data_template_sample 。
-## 5. 使用CRONTAB定期运行dataSample.sh文件
+### 4.2 看到可执行文件 ./data_template_sample ( sudo chmod 755 datasample.sh)
+## 5. 使用CRONTAB定期运行dataSample.sh文件,
 
 
 
